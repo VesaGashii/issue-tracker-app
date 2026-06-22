@@ -12,6 +12,13 @@ class ProjectCrudTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->signIn();
+    }
+
     public function test_projects_can_be_listed_with_issue_counts(): void
     {
         $project = Project::factory()->create();

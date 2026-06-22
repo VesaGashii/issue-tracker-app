@@ -11,6 +11,13 @@ class IssueTagAjaxTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->signIn();
+    }
+
     public function test_a_tag_can_be_attached_to_an_issue_with_json(): void
     {
         $issue = Issue::factory()->create();

@@ -10,6 +10,8 @@ A small team issue tracker built for the PRITECH Laravel technical task.
 - Unique tags with custom colors
 - AJAX tag attach/detach without a page reload
 - AJAX comments with inline validation and pagination
+- Basic authentication with seeded team accounts
+- Project ownership policies for edit and delete actions
 - Demo factories and seed data
 - Feature tests for the main workflows
 
@@ -44,6 +46,8 @@ Open [http://127.0.0.1:8000](http://127.0.0.1:8000).
 
 The seeded database contains three projects, several issues, five tags, and comments.
 
+Sign in with `alex@example.com` and password `password`. Two additional seeded team accounts use `sam@example.com` and `jordan@example.com` with the same password.
+
 ## Tests
 
 ```bash
@@ -64,4 +68,4 @@ On an issue detail page, comments and tag changes are handled through AJAX.
 
 - SQLite is used by default for quick local setup.
 - Running `php artisan migrate:fresh --seed` deletes local database data and recreates the demo dataset.
-- Authentication and assignment to users are optional bonus requirements and are not included in the core implementation.
+- The workspace is private. Public registration is intentionally disabled for this small-team setup.

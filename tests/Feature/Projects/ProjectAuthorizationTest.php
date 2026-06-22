@@ -19,6 +19,13 @@ class ProjectAuthorizationTest extends TestCase
         $this->get(route('projects.edit', $project))->assertRedirect(route('login'));
     }
 
+    public function test_guests_cannot_view_the_workspace(): void
+    {
+        $this->get(route('projects.index'))->assertRedirect(route('login'));
+        $this->get(route('issues.index'))->assertRedirect(route('login'));
+        $this->get(route('tags.index'))->assertRedirect(route('login'));
+    }
+
     public function test_only_the_owner_can_edit_or_delete_a_project(): void
     {
         $owner = User::factory()->create();

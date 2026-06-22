@@ -40,7 +40,7 @@
                 <div data-comment-errors class="hidden rounded-lg bg-red-50 p-3 text-sm text-red-700"></div>
                 <div>
                     <label for="author_name" class="mb-1.5 block text-sm font-medium">Your name</label>
-                    <input id="author_name" name="author_name" maxlength="100"
+                    <input id="author_name" name="author_name" maxlength="100" value="{{ auth()->user()->name }}"
                            class="w-full rounded-lg border border-slate-300 px-3 py-2.5 outline-none focus:border-indigo-500 focus:ring-3 focus:ring-indigo-100">
                     <p class="mt-1 hidden text-sm text-red-600" data-field-error="author_name"></p>
                 </div>

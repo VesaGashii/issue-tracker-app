@@ -15,6 +15,13 @@ class IssueCrudTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->signIn();
+    }
+
     public function test_issues_are_listed_with_their_project_tags_and_comment_count(): void
     {
         $issue = Issue::factory()->create();

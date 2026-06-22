@@ -19,14 +19,13 @@ Route::middleware('guest')->group(function (): void {
 
 Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->middleware('auth')->name('logout');
 
-Route::resource('projects', ProjectController::class)
-    ->only(['create', 'store', 'edit', 'update', 'destroy'])
-    ->middleware('auth');
-Route::resource('projects', ProjectController::class)->only(['index', 'show']);
-Route::resource('issues', IssueController::class);
-Route::resource('tags', TagController::class)->only(['index', 'store']);
+Route::middleware('auth')->group(function (): void {
+    Route::resource('projects', ProjectController::class);
+    Route::resource('issues', IssueController::class);
+    Route::resource('tags', TagController::class)->only(['index', 'store']);
 
-Route::get('issues/{issue}/comments', [IssueCommentController::class, 'index'])->name('issues.comments.index');
-Route::post('issues/{issue}/comments', [IssueCommentController::class, 'store'])->name('issues.comments.store');
-Route::post('issues/{issue}/tags/{tag}', [IssueTagController::class, 'store'])->name('issues.tags.store');
-Route::delete('issues/{issue}/tags/{tag}', [IssueTagController::class, 'destroy'])->name('issues.tags.destroy');
+    Route::get('issues/{issue}/comments', [IssueCommentController::class, 'index'])->name('issues.comments.index');
+    Route::post('issues/{issue}/comments', [IssueCommentController::class, 'store'])->name('issues.comments.store');
+    Route::post('issues/{issue}/tags/{tag}', [IssueTagController::class, 'store'])->name('issues.tags.store');
+    Route::delete('issues/{issue}/tags/{tag}', [IssueTagController::class, 'destroy'])->name('issues.tags.destroy');
+});

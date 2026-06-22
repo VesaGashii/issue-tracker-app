@@ -11,6 +11,13 @@ class IssueCommentAjaxTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->signIn();
+    }
+
     public function test_comments_are_returned_as_paginated_html_json(): void
     {
         $issue = Issue::factory()->create();

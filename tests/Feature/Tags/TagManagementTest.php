@@ -11,6 +11,13 @@ class TagManagementTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->signIn();
+    }
+
     public function test_tags_are_listed_with_issue_counts(): void
     {
         $tag = Tag::factory()->create();
