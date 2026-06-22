@@ -25,6 +25,14 @@
                 <a href="{{ route('tags.index') }}" class="rounded-lg px-3 py-2 {{ request()->routeIs('tags.*') ? 'bg-indigo-50 text-indigo-700' : 'text-slate-600 hover:bg-slate-100' }}">
                     Tags
                 </a>
+                @auth
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button class="rounded-lg px-3 py-2 text-slate-600 hover:bg-slate-100">Sign out</button>
+                    </form>
+                @else
+                    <a href="{{ route('login') }}" class="rounded-lg px-3 py-2 text-slate-600 hover:bg-slate-100">Sign in</a>
+                @endauth
             </div>
         </nav>
     </header>

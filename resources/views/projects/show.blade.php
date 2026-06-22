@@ -14,6 +14,7 @@
             </div>
         </div>
 
+        @can('update', $project)
         <div class="flex gap-2">
             <a href="{{ route('projects.edit', $project) }}" class="rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold hover:bg-slate-50">Edit</a>
             <form method="POST" action="{{ route('projects.destroy', $project) }}" onsubmit="return confirm('Delete this project and all of its issues?')">
@@ -22,6 +23,7 @@
                 <button class="rounded-xl border border-red-200 bg-white px-4 py-2.5 text-sm font-semibold text-red-600 hover:bg-red-50">Delete</button>
             </form>
         </div>
+        @endcan
     </div>
 
     <section class="mt-10">

@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateProjectRequest;
 use App\Models\Project;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Gate;
 
 class ProjectController extends Controller
 {
@@ -27,7 +28,7 @@ class ProjectController extends Controller
 
     public function store(StoreProjectRequest $request): RedirectResponse
     {
-        $project = Project::query()->create($request->validated());
+        $project = $request->user()->ownedProjects()->create($request->validated());
 
         return to_route('projects.show', $project)
             ->with('success', 'Project created successfully.');
@@ -46,11 +47,14 @@ class ProjectController extends Controller
 
     public function edit(Project $project): View
     {
+        Gate::authorize('update', $project);
+
         return view('projects.edit', compact('project'));
     }
 
     public function update(UpdateProjectRequest $request, Project $project): RedirectResponse
     {
+        Gate::authorize('update', $project);
         $project->update($request->validated());
 
         return to_route('projects.show', $project)
@@ -59,6 +63,7 @@ class ProjectController extends Controller
 
     public function destroy(Project $project): RedirectResponse
     {
+        Gate::authorize('delete', $project);
         $project->delete();
 
         return to_route('projects.index')

@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Project;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -20,6 +21,7 @@ class ProjectFactory extends Factory
         $startDate = fake()->dateTimeBetween('-3 months', '+1 month');
 
         return [
+            'owner_id' => User::factory(),
             'name' => fake()->unique()->words(3, true),
             'description' => fake()->paragraphs(2, true),
             'start_date' => $startDate,

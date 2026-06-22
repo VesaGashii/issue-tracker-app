@@ -4,6 +4,7 @@ namespace Tests\Feature\Projects;
 
 use App\Models\Issue;
 use App\Models\Project;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -24,6 +25,9 @@ class ProjectCrudTest extends TestCase
 
     public function test_a_project_can_be_created(): void
     {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
         $response = $this->post(route('projects.store'), [
             'name' => 'Customer portal',
             'description' => 'Build and ship the customer portal.',
@@ -35,10 +39,13 @@ class ProjectCrudTest extends TestCase
 
         $response->assertRedirect(route('projects.show', $project));
         $this->assertSame('Customer portal', $project->name);
+        $this->assertTrue($project->owner->is($user));
     }
 
     public function test_project_validation_errors_are_returned_to_the_page(): void
     {
+        $this->actingAs(User::factory()->create());
+
         $this->from(route('projects.create'))
             ->post(route('projects.store'), [
                 'name' => '',
@@ -64,6 +71,7 @@ class ProjectCrudTest extends TestCase
     public function test_a_project_can_be_updated(): void
     {
         $project = Project::factory()->create();
+        $this->actingAs($project->owner);
 
         $this->put(route('projects.update', $project), [
             'name' => 'Updated project',
@@ -81,6 +89,7 @@ class ProjectCrudTest extends TestCase
     public function test_a_project_and_its_issues_can_be_deleted(): void
     {
         $project = Project::factory()->create();
+        $this->actingAs($project->owner);
         $issue = Issue::factory()->for($project)->create();
 
         $this->delete(route('projects.destroy', $project))

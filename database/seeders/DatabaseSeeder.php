@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\Comment;
 use App\Models\Issue;
-use App\Models\Project;
 use App\Models\Tag;
 use App\Models\User;
 use Carbon\CarbonImmutable;
@@ -20,10 +19,11 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory()->create([
-            'name' => 'Demo User',
-            'email' => 'demo@example.com',
-        ]);
+        $users = collect([
+            ['name' => 'Alex Morgan', 'email' => 'alex@example.com'],
+            ['name' => 'Sam Rivera', 'email' => 'sam@example.com'],
+            ['name' => 'Jordan Lee', 'email' => 'jordan@example.com'],
+        ])->map(fn (array $user) => User::factory()->create($user));
 
         $tags = collect([
             ['name' => 'bug', 'color' => '#ef4444'],
@@ -72,11 +72,11 @@ class DatabaseSeeder extends Seeder
             ],
         ];
 
-        foreach ($projects as $projectData) {
+        foreach ($projects as $projectIndex => $projectData) {
             $issues = $projectData['issues'];
             unset($projectData['issues']);
 
-            $project = Project::query()->create($projectData);
+            $project = $users[$projectIndex]->ownedProjects()->create($projectData);
 
             foreach ($issues as $index => $issueData) {
                 $tagNames = $issueData['tags'];
