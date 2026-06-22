@@ -27,24 +27,43 @@
     </div>
 
     <div class="mt-8 grid gap-6 lg:grid-cols-[2fr_1fr]">
-        <section class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <section class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+                 data-comments
+                 data-index-url="{{ route('issues.comments.index', $issue) }}">
             <div class="flex items-center justify-between">
                 <h2 class="text-lg font-semibold">Comments</h2>
-                <span class="text-sm text-slate-500">{{ $issue->comments_count }} total</span>
+                <span class="text-sm text-slate-500"><span data-comment-count>{{ $issue->comments_count }}</span> total</span>
             </div>
-            <div class="mt-5 space-y-4">
-                @forelse ($comments as $comment)
-                    <article class="rounded-xl bg-slate-50 p-4">
-                        <div class="flex justify-between gap-3">
-                            <p class="font-medium">{{ $comment->author_name }}</p>
-                            <time class="text-xs text-slate-500">{{ $comment->created_at->diffForHumans() }}</time>
-                        </div>
-                        <p class="mt-2 text-sm leading-6 text-slate-600">{{ $comment->body }}</p>
-                    </article>
-                @empty
-                    <p class="py-6 text-center text-sm text-slate-500">No comments yet.</p>
-                @endforelse
+
+            <form method="POST" action="{{ route('issues.comments.store', $issue) }}" class="mt-5 space-y-4 rounded-xl border border-slate-200 p-4" data-comment-form>
+                @csrf
+                <div data-comment-errors class="hidden rounded-lg bg-red-50 p-3 text-sm text-red-700"></div>
+                <div>
+                    <label for="author_name" class="mb-1.5 block text-sm font-medium">Your name</label>
+                    <input id="author_name" name="author_name" maxlength="100"
+                           class="w-full rounded-lg border border-slate-300 px-3 py-2.5 outline-none focus:border-indigo-500 focus:ring-3 focus:ring-indigo-100">
+                    <p class="mt-1 hidden text-sm text-red-600" data-field-error="author_name"></p>
+                </div>
+                <div>
+                    <label for="body" class="mb-1.5 block text-sm font-medium">Comment</label>
+                    <textarea id="body" name="body" rows="3" maxlength="5000"
+                              class="w-full rounded-lg border border-slate-300 px-3 py-2.5 outline-none focus:border-indigo-500 focus:ring-3 focus:ring-indigo-100"></textarea>
+                    <p class="mt-1 hidden text-sm text-red-600" data-field-error="body"></p>
+                </div>
+                <div class="flex justify-end">
+                    <button class="rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-indigo-700">Add comment</button>
+                </div>
+            </form>
+
+            <div class="mt-5 space-y-4" data-comment-list>
+                @include('comments._list')
             </div>
+            @if ($comments->hasMorePages())
+                <button type="button" data-load-more-comments data-next-url="{{ route('issues.comments.index', ['issue' => $issue, 'page' => 2], false) }}"
+                        class="mt-5 w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm font-medium hover:bg-slate-50">
+                    Load more comments
+                </button>
+            @endif
         </section>
 
         <aside class="space-y-6">
@@ -62,14 +81,37 @@
                 </dl>
             </div>
 
-            <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                <h2 class="font-semibold">Tags</h2>
-                <div class="mt-4 flex flex-wrap gap-2">
+            <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm" data-tags>
+                <div class="flex items-center justify-between">
+                    <h2 class="font-semibold">Tags</h2>
+                    <button type="button" data-tag-toggle class="text-sm font-medium text-indigo-600 hover:text-indigo-800">Manage</button>
+                </div>
+                <div class="mt-4 flex flex-wrap gap-2" data-attached-tags>
                     @forelse ($issue->tags as $tag)
-                        <span class="rounded-full px-3 py-1 text-xs font-medium text-white" style="background-color: {{ $tag->color ?? '#64748b' }}">{{ $tag->name }}</span>
+                        <span data-tag-badge="{{ $tag->id }}" class="rounded-full px-3 py-1 text-xs font-medium text-white" style="background-color: {{ $tag->color ?? '#64748b' }}">{{ $tag->name }}</span>
                     @empty
-                        <p class="text-sm text-slate-500">No tags attached.</p>
+                        <p class="text-sm text-slate-500" data-no-tags>No tags attached.</p>
                     @endforelse
+                </div>
+
+                <div class="mt-4 hidden space-y-2 border-t border-slate-100 pt-4" data-tag-panel>
+                    <p class="hidden rounded-lg bg-red-50 p-2 text-sm text-red-700" data-tag-error></p>
+                    @foreach ($availableTags as $tag)
+                        <label class="flex cursor-pointer items-center justify-between rounded-lg px-2 py-2 hover:bg-slate-50">
+                            <span class="flex items-center gap-2 text-sm">
+                                <span class="size-3 rounded-full" style="background-color: {{ $tag->color ?? '#64748b' }}"></span>
+                                {{ $tag->name }}
+                            </span>
+                            <input type="checkbox"
+                                   value="{{ $tag->id }}"
+                                   data-tag-checkbox
+                                   data-attach-url="{{ route('issues.tags.store', [$issue, $tag]) }}"
+                                   data-detach-url="{{ route('issues.tags.destroy', [$issue, $tag]) }}"
+                                   data-tag-name="{{ $tag->name }}"
+                                   data-tag-color="{{ $tag->color ?? '#64748b' }}"
+                                   @checked($issue->tags->contains($tag))>
+                        </label>
+                    @endforeach
                 </div>
             </div>
         </aside>

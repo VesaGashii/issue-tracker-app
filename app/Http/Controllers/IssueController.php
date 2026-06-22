@@ -68,9 +68,10 @@ class IssueController extends Controller
         $issue->load(['project', 'tags'])
             ->loadCount('comments');
 
-        $comments = $issue->comments()->latest()->limit(5)->get();
+        $comments = $issue->comments()->latest()->paginate(5);
+        $availableTags = Tag::query()->orderBy('name')->get();
 
-        return view('issues.show', compact('issue', 'comments'));
+        return view('issues.show', compact('issue', 'comments', 'availableTags'));
     }
 
     public function edit(Issue $issue): View
