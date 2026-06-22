@@ -9,7 +9,7 @@
             <h1 class="mt-1 text-3xl font-bold tracking-tight">Projects</h1>
             <p class="mt-2 text-slate-600">Track the work, deadlines, and issues across your team.</p>
         </div>
-        <a href="{{ route('projects.create') }}" class="rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700">
+        <a href="{{ route('projects.create') }}" class="whitespace-nowrap rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700">
             New project
         </a>
     </div>

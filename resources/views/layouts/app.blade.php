@@ -12,7 +12,7 @@
         <nav class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
             <a href="{{ route('projects.index') }}" class="flex items-center gap-3 font-semibold">
                 <span class="grid size-9 place-items-center rounded-xl bg-indigo-600 text-sm text-white">PT</span>
-                <span>Mini Issue Tracker</span>
+                <span class="hidden sm:inline">Mini Issue Tracker</span>
             </a>
 
             <div class="flex items-center gap-2 text-sm font-medium">

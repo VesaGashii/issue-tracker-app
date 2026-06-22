@@ -43,6 +43,7 @@ if (commentsSection) {
         button.disabled = true;
 
         try {
+            const loadMoreButton = commentsSection.querySelector('[data-load-more-comments]');
             const data = await requestJson(form.action, {
                 method: 'POST',
                 body: new FormData(form),
@@ -50,6 +51,12 @@ if (commentsSection) {
 
             list.querySelector('[data-no-comments], .comments-empty')?.remove();
             list.insertAdjacentHTML('afterbegin', data.html);
+
+            if (loadMoreButton) {
+                const visibleComments = list.querySelectorAll('.comment-item');
+                visibleComments[visibleComments.length - 1]?.remove();
+            }
+
             count.textContent = String(Number(count.textContent) + 1);
             form.reset();
         } catch (error) {

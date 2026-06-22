@@ -30,6 +30,17 @@ class StoreCommentRequest extends FormRequest
         ];
     }
 
+    /**
+     * @return array<string, string>
+     */
+    public function attributes(): array
+    {
+        return [
+            'author_name' => 'name',
+            'body' => 'comment',
+        ];
+    }
+
     protected function failedValidation(Validator $validator): never
     {
         throw new HttpResponseException(response()->json([
