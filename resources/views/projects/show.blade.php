@@ -30,11 +30,15 @@
                 <h2 class="text-xl font-semibold">Issues</h2>
                 <p class="mt-1 text-sm text-slate-500">Issues belonging to this project.</p>
             </div>
+            <a href="{{ route('issues.create', ['project' => $project->id]) }}"
+               class="rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-indigo-700">
+                Add issue
+            </a>
         </div>
 
         <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
             @forelse ($issues as $issue)
-                <div class="border-b border-slate-100 p-5 last:border-0">
+                <a href="{{ route('issues.show', $issue) }}" class="block border-b border-slate-100 p-5 transition last:border-0 hover:bg-slate-50">
                     <div class="flex flex-wrap items-start justify-between gap-3">
                         <div>
                             <h3 class="font-semibold">{{ $issue->title }}</h3>
@@ -46,7 +50,7 @@
                         </div>
                     </div>
                     <div class="mt-3 text-xs text-slate-500">{{ $issue->comments_count }} comments · Due {{ $issue->due_date?->format('M j, Y') ?? 'not set' }}</div>
-                </div>
+                </a>
             @empty
                 <div class="p-10 text-center text-sm text-slate-500">No issues have been added to this project yet.</div>
             @endforelse

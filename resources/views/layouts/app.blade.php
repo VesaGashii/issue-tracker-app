@@ -19,6 +19,12 @@
                 <a href="{{ route('projects.index') }}" class="rounded-lg px-3 py-2 {{ request()->routeIs('projects.*') ? 'bg-indigo-50 text-indigo-700' : 'text-slate-600 hover:bg-slate-100' }}">
                     Projects
                 </a>
+                <a href="{{ route('issues.index') }}" class="rounded-lg px-3 py-2 {{ request()->routeIs('issues.*') ? 'bg-indigo-50 text-indigo-700' : 'text-slate-600 hover:bg-slate-100' }}">
+                    Issues
+                </a>
+                <a href="{{ route('tags.index') }}" class="rounded-lg px-3 py-2 {{ request()->routeIs('tags.*') ? 'bg-indigo-50 text-indigo-700' : 'text-slate-600 hover:bg-slate-100' }}">
+                    Tags
+                </a>
             </div>
         </nav>
     </header>
