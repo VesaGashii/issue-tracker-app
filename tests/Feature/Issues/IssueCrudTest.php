@@ -61,6 +61,41 @@ class IssueCrudTest extends TestCase
             ->assertDontSee($other->title);
     }
 
+    public function test_issues_can_be_searched_by_title_or_description(): void
+    {
+        $titleMatch = Issue::factory()->create([
+            'title' => 'Safari checkout problem',
+            'description' => 'A normal description.',
+        ]);
+        $descriptionMatch = Issue::factory()->create([
+            'title' => 'Another issue',
+            'description' => 'Checkout fails after applying a coupon.',
+        ]);
+        $other = Issue::factory()->create([
+            'title' => 'Update footer',
+            'description' => 'Replace an old company link.',
+        ]);
+
+        $this->get(route('issues.index', ['q' => 'checkout']))
+            ->assertOk()
+            ->assertSee($titleMatch->title)
+            ->assertSee($descriptionMatch->title)
+            ->assertDontSee($other->title);
+    }
+
+    public function test_issue_search_can_return_ajax_html(): void
+    {
+        $wanted = Issue::factory()->create(['title' => 'Unique search phrase']);
+        $other = Issue::factory()->create(['title' => 'Unrelated issue']);
+
+        $this->getJson(route('issues.index', ['q' => 'Unique search']))
+            ->assertOk()
+            ->assertJsonStructure(['html', 'count'])
+            ->assertJsonPath('count', 1)
+            ->assertSee($wanted->title, false)
+            ->assertDontSee($other->title, false);
+    }
+
     public function test_an_issue_can_be_created(): void
     {
         $project = Project::factory()->create();

@@ -204,3 +204,45 @@ if (membersSection) {
         });
     });
 }
+
+const issueFilters = document.querySelector('[data-issue-filters]');
+
+if (issueFilters) {
+    const search = issueFilters.querySelector('[data-issue-search]');
+    const results = document.querySelector('[data-issue-results]');
+    const spinner = issueFilters.querySelector('[data-search-spinner]');
+    let debounceTimer;
+    let activeRequest;
+
+    search.addEventListener('input', () => {
+        clearTimeout(debounceTimer);
+
+        debounceTimer = setTimeout(async () => {
+            activeRequest?.abort();
+            activeRequest = new AbortController();
+            spinner.classList.remove('hidden');
+
+            const params = new URLSearchParams(new FormData(issueFilters));
+            const url = `${issueFilters.action || window.location.pathname}?${params.toString()}`;
+
+            try {
+                const response = await fetch(url, {
+                    headers: { Accept: 'application/json' },
+                    signal: activeRequest.signal,
+                });
+                const data = await response.json();
+
+                if (!response.ok) throw new Error(data.message);
+
+                results.innerHTML = data.html;
+                window.history.replaceState({}, '', url);
+            } catch (error) {
+                if (error.name !== 'AbortError') {
+                    results.innerHTML = '<div class="mt-6 rounded-xl bg-red-50 p-4 text-sm text-red-700">Search could not be loaded.</div>';
+                }
+            } finally {
+                spinner.classList.add('hidden');
+            }
+        }, 350);
+    });
+}

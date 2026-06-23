@@ -11,17 +11,19 @@ use App\Models\Project;
 use App\Models\Tag;
 use App\Models\User;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class IssueController extends Controller
 {
-    public function index(Request $request): View
+    public function index(Request $request): View|JsonResponse
     {
         $filters = $request->validate([
             'status' => ['nullable', 'string'],
             'priority' => ['nullable', 'string'],
             'tag' => ['nullable', 'integer', 'exists:tags,id'],
+            'q' => ['nullable', 'string', 'max:100'],
         ]);
 
         $issues = Issue::query()
@@ -39,11 +41,26 @@ class IssueController extends Controller
                 $filters['tag'] ?? null,
                 fn ($query, $tagId) => $query->whereHas('tags', fn ($tagQuery) => $tagQuery->whereKey($tagId))
             )
+            ->when(
+                $filters['q'] ?? null,
+                fn ($query, $search) => $query->where(function ($searchQuery) use ($search): void {
+                    $searchQuery
+                        ->where('title', 'like', "%{$search}%")
+                        ->orWhere('description', 'like', "%{$search}%");
+                })
+            )
             ->latest()
             ->paginate(12)
             ->withQueryString();
 
         $tags = Tag::query()->orderBy('name')->get();
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'html' => view('issues._results', compact('issues'))->render(),
+                'count' => $issues->total(),
+            ]);
+        }
 
         return view('issues.index', compact('issues', 'tags'));
     }
