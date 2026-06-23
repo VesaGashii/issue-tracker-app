@@ -12,7 +12,10 @@ class AuthenticationTest extends TestCase
 
     public function test_the_login_page_is_available(): void
     {
-        $this->get(route('login'))->assertOk();
+        $this->get(route('login'))
+            ->assertOk()
+            ->assertSee('inputmode="email"', false)
+            ->assertSee('type="text"', false);
     }
 
     public function test_a_user_can_sign_in_and_sign_out(): void

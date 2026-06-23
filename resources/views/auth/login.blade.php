@@ -12,7 +12,7 @@
             @csrf
             <div>
                 <label for="email" class="mb-2 block text-sm font-medium">Email</label>
-                <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus class="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:border-indigo-500 focus:ring-3 focus:ring-indigo-100">
+                <input id="email" type="text" inputmode="email" autocomplete="username" name="email" value="{{ old('email') }}" required autofocus class="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:border-indigo-500 focus:ring-3 focus:ring-indigo-100">
                 @error('email') <p class="mt-2 text-sm text-red-600">{{ $message }}</p> @enderror
             </div>
             <div>
