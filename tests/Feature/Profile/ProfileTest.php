@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Profile;
 
+use App\Enums\IssueStatus;
 use App\Models\Issue;
 use App\Models\Project;
 use App\Models\User;
@@ -22,14 +23,18 @@ class ProfileTest extends TestCase
     {
         $user = $this->signIn();
         $project = Project::factory()->for($user, 'owner')->create();
-        Issue::factory()->count(2)->for($project)->create();
+        $issues = Issue::factory()->count(2)->for($project)->create([
+            'status' => IssueStatus::Open,
+        ]);
+        $issues->first()->members()->attach($user);
 
         $this->get(route('profile.show'))
             ->assertOk()
             ->assertSee($user->name)
             ->assertSee($user->email)
             ->assertSee($project->name)
-            ->assertSee('2 issues');
+            ->assertSee('2 issues')
+            ->assertSee($issues->first()->title);
     }
 
     public function test_a_user_can_update_their_name_and_email(): void

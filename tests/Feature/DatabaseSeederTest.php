@@ -17,6 +17,7 @@ class DatabaseSeederTest extends TestCase
         $this->assertDatabaseCount('issues', 12);
         $this->assertDatabaseCount('tags', 5);
         $this->assertDatabaseCount('comments', 24);
+        $this->assertDatabaseCount('issue_user', 24);
 
         $this->assertDatabaseHas('projects', ['name' => 'Customer Portal']);
         $this->assertDatabaseHas('issues', ['title' => 'Login form fails on Safari']);

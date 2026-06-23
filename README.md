@@ -13,6 +13,7 @@ A small team issue tracker built for the PRITECH Laravel technical task.
 - Basic authentication with seeded team accounts
 - Project ownership policies for edit and delete actions
 - User profile with owned-project summary and account settings
+- Multiple issue members with AJAX assignment controls
 - Demo factories and seed data
 - Feature tests for the main workflows
 

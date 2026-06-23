@@ -14,12 +14,13 @@
         </div>
     </div>
 
-    <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
         @foreach ([
             ['label' => 'Owned projects', 'value' => $summary['projects']],
             ['label' => 'Project issues', 'value' => $summary['issues']],
             ['label' => 'Still open', 'value' => $summary['open']],
             ['label' => 'Overdue', 'value' => $summary['overdue']],
+            ['label' => 'Assigned to me', 'value' => $summary['assigned']],
         ] as $stat)
             <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
                 <p class="text-sm text-slate-500">{{ $stat['label'] }}</p>
@@ -27,6 +28,24 @@
             </div>
         @endforeach
     </div>
+
+    <section class="mt-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div>
+            <h2 class="text-lg font-semibold">Assigned to me</h2>
+            <p class="mt-1 text-sm text-slate-500">Your open work across all team projects.</p>
+        </div>
+        <div class="mt-5 grid gap-3 md:grid-cols-2">
+            @forelse ($assignedIssues as $issue)
+                <a href="{{ route('issues.show', $issue) }}" class="rounded-xl border border-slate-200 p-4 transition hover:border-indigo-200 hover:bg-indigo-50/40">
+                    <p class="text-xs font-medium text-indigo-600">{{ $issue->project->name }}</p>
+                    <p class="mt-1 font-medium">{{ $issue->title }}</p>
+                    <p class="mt-2 text-xs text-slate-500">Due {{ $issue->due_date?->format('M j, Y') ?? 'not set' }}</p>
+                </a>
+            @empty
+                <p class="text-sm text-slate-500">You have no open assigned issues.</p>
+            @endforelse
+        </div>
+    </section>
 
     <div class="mt-8 grid gap-6 lg:grid-cols-[1.2fr_1fr]">
         <section class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">

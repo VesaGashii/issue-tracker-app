@@ -17,6 +17,12 @@ class ProfileController extends Controller
             ->withCount('issues')
             ->latest()
             ->get();
+        $assignedIssues = $user->assignedIssues()
+            ->with('project')
+            ->where('status', '!=', IssueStatus::Closed)
+            ->orderBy('due_date')
+            ->limit(6)
+            ->get();
 
         $summary = [
             'projects' => $projects->count(),
@@ -30,9 +36,10 @@ class ProfileController extends Controller
                 ->where('status', '!=', IssueStatus::Closed)
                 ->whereDate('due_date', '<', today())
                 ->count(),
+            'assigned' => $user->assignedIssues()->where('status', '!=', IssueStatus::Closed)->count(),
         ];
 
-        return view('profile.show', compact('user', 'projects', 'summary'));
+        return view('profile.show', compact('user', 'projects', 'assignedIssues', 'summary'));
     }
 
     public function update(UpdateProfileRequest $request): RedirectResponse

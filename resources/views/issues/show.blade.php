@@ -81,6 +81,48 @@
                 </dl>
             </div>
 
+            <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm" data-members>
+                <div class="flex items-center justify-between">
+                    <h2 class="font-semibold">Members</h2>
+                    <button type="button" data-member-toggle class="text-sm font-medium text-indigo-600 hover:text-indigo-800">Manage</button>
+                </div>
+                <div class="mt-4 space-y-2" data-assigned-members>
+                    @forelse ($issue->members as $member)
+                        <div data-member-card="{{ $member->id }}" class="flex items-center gap-3 rounded-xl bg-slate-50 p-3">
+                            <span class="grid size-9 shrink-0 place-items-center rounded-full bg-indigo-100 text-sm font-semibold text-indigo-700">
+                                {{ str($member->name)->substr(0, 1)->upper() }}
+                            </span>
+                            <div class="min-w-0">
+                                <p class="truncate text-sm font-medium">{{ $member->name }}</p>
+                                <p class="truncate text-xs text-slate-500">{{ $member->email }}</p>
+                            </div>
+                        </div>
+                    @empty
+                        <p class="text-sm text-slate-500" data-no-members>No members assigned.</p>
+                    @endforelse
+                </div>
+
+                <div class="mt-4 hidden space-y-2 border-t border-slate-100 pt-4" data-member-panel>
+                    <p class="hidden rounded-lg bg-red-50 p-2 text-sm text-red-700" data-member-error></p>
+                    @foreach ($availableMembers as $member)
+                        <label class="flex cursor-pointer items-center justify-between rounded-lg px-2 py-2 hover:bg-slate-50">
+                            <span class="text-sm">
+                                <span class="block font-medium">{{ $member->name }}</span>
+                                <span class="text-xs text-slate-500">{{ $member->email }}</span>
+                            </span>
+                            <input type="checkbox"
+                                   value="{{ $member->id }}"
+                                   data-member-checkbox
+                                   data-attach-url="{{ route('issues.members.store', [$issue, $member]) }}"
+                                   data-detach-url="{{ route('issues.members.destroy', [$issue, $member]) }}"
+                                   data-member-name="{{ $member->name }}"
+                                   data-member-email="{{ $member->email }}"
+                                   @checked($issue->members->contains($member))>
+                        </label>
+                    @endforeach
+                </div>
+            </div>
+
             <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm" data-tags>
                 <div class="flex items-center justify-between">
                     <h2 class="font-semibold">Tags</h2>

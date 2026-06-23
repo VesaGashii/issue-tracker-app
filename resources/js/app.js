@@ -142,3 +142,65 @@ if (tagsSection) {
         });
     });
 }
+
+const membersSection = document.querySelector('[data-members]');
+
+if (membersSection) {
+    const panel = membersSection.querySelector('[data-member-panel]');
+    const cards = membersSection.querySelector('[data-assigned-members]');
+    const error = membersSection.querySelector('[data-member-error]');
+
+    membersSection.querySelector('[data-member-toggle]').addEventListener('click', () => {
+        panel.classList.toggle('hidden');
+    });
+
+    membersSection.querySelectorAll('[data-member-checkbox]').forEach((checkbox) => {
+        checkbox.addEventListener('change', async () => {
+            const shouldAttach = checkbox.checked;
+            checkbox.disabled = true;
+            error.classList.add('hidden');
+
+            try {
+                await requestJson(shouldAttach ? checkbox.dataset.attachUrl : checkbox.dataset.detachUrl, {
+                    method: shouldAttach ? 'POST' : 'DELETE',
+                });
+
+                cards.querySelector('[data-no-members]')?.remove();
+                cards.querySelector(`[data-member-card="${checkbox.value}"]`)?.remove();
+
+                if (shouldAttach) {
+                    const card = document.createElement('div');
+                    card.dataset.memberCard = checkbox.value;
+                    card.className = 'flex items-center gap-3 rounded-xl bg-slate-50 p-3';
+
+                    const avatar = document.createElement('span');
+                    avatar.className = 'grid size-9 shrink-0 place-items-center rounded-full bg-indigo-100 text-sm font-semibold text-indigo-700';
+                    avatar.textContent = checkbox.dataset.memberName.charAt(0).toUpperCase();
+
+                    const details = document.createElement('div');
+                    details.className = 'min-w-0';
+
+                    const name = document.createElement('p');
+                    name.className = 'truncate text-sm font-medium';
+                    name.textContent = checkbox.dataset.memberName;
+
+                    const email = document.createElement('p');
+                    email.className = 'truncate text-xs text-slate-500';
+                    email.textContent = checkbox.dataset.memberEmail;
+
+                    details.append(name, email);
+                    card.append(avatar, details);
+                    cards.append(card);
+                } else if (!cards.querySelector('[data-member-card]')) {
+                    cards.insertAdjacentHTML('beforeend', '<p class="text-sm text-slate-500" data-no-members>No members assigned.</p>');
+                }
+            } catch (requestError) {
+                checkbox.checked = !shouldAttach;
+                error.textContent = requestError.message;
+                error.classList.remove('hidden');
+            } finally {
+                checkbox.disabled = false;
+            }
+        });
+    });
+}

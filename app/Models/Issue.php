@@ -43,6 +43,14 @@ class Issue extends Model
     }
 
     /**
+     * @return BelongsToMany<User, $this>
+     */
+    public function members(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class)->withTimestamps();
+    }
+
+    /**
      * @return array<string, string>
      */
     protected function casts(): array

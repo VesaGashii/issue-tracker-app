@@ -8,6 +8,7 @@ use App\Models\Comment;
 use App\Models\Issue;
 use App\Models\Project;
 use App\Models\Tag;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -36,6 +37,17 @@ class IssueTrackerRelationshipsTest extends TestCase
         $this->assertTrue($comment->issue->is($issue));
         $this->assertTrue($issue->tags->contains($tag));
         $this->assertTrue($tag->issues->contains($issue));
+    }
+
+    public function test_issues_and_members_have_a_many_to_many_relationship(): void
+    {
+        $issue = Issue::factory()->create();
+        $member = User::factory()->create();
+
+        $issue->members()->attach($member);
+
+        $this->assertTrue($issue->members->contains($member));
+        $this->assertTrue($member->assignedIssues->contains($issue));
     }
 
     public function test_issue_values_and_dates_are_cast_to_domain_types(): void
