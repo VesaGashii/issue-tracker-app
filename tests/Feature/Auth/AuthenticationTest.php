@@ -41,4 +41,16 @@ class AuthenticationTest extends TestCase
 
         $this->assertGuest();
     }
+
+    public function test_an_email_with_surrounding_spaces_is_rejected(): void
+    {
+        $user = User::factory()->create();
+
+        $this->post(route('login.store'), [
+            'email' => " {$user->email} ",
+            'password' => 'password',
+        ])->assertSessionHasErrors('email');
+
+        $this->assertGuest();
+    }
 }
