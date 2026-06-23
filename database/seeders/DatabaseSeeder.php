@@ -91,10 +91,9 @@ class DatabaseSeeder extends Seeder
                 $issue->tags()->attach(
                     $tags->whereIn('name', $tagNames)->pluck('id')
                 );
-                $issue->members()->attach([
-                    $users[$index % $users->count()]->id,
-                    $users[($index + 1) % $users->count()]->id,
-                ]);
+                $issue->members()->attach(
+                    $users[($projectIndex + $index) % $users->count()]
+                );
 
                 Comment::factory()
                     ->count(2)
